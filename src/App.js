@@ -1,5 +1,6 @@
 import { React, Component } from "react";
 import { Switch, Route } from "react-router-dom";
+import { connect } from 'react-redux';
 
 import "./App.css";
 
@@ -8,20 +9,18 @@ import ShopPage from "./components/pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./components/pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils.js";
+import { setCurrentUser }  from './redux/user/user.actions';
 
-export default class App extends Component {
-
-  constructor() {
-    super();
-
-    this.state = {
-      currentUser: null
-    };
-  }
+class App extends Component {
 
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+
+    // No more state, but because of mapDispatchToProps, it now has access setCurrentUser action that is used on userReducer
+    // With a simple destructuring, we now have access to setCurrentUser without having to call this.props.setCurrentUser
+    const { setCurrentUser } = this.props;
+    
     // Open subscription between firebase and the application
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       // If a user has been authenticated
@@ -31,7 +30,7 @@ export default class App extends Component {
 
         // userRef stores the users info, so populate currentUser in state with that info
         userRef.onSnapshot(snapShot => {
-          this.setState({
+          setCurrentUser({
             currentUser: {
               id: snapShot.id,
               ...snapShot.data()
@@ -40,7 +39,7 @@ export default class App extends Component {
         });
       } 
     
-      this.setState({ currentUser: userAuth });
+      setCurrentUser(userAuth);
 
     });
   }
@@ -52,7 +51,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header/>
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
@@ -62,3 +61,11 @@ export default class App extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  // Dispatches or extablishes access to the setCurrentUser Action within this class
+  // This prop is passed to the class which containes the Action that will structure the payload for updating the userReducer state slice
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+export default connect(null, mapDispatchToProps)(App);

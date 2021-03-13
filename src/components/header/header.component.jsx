@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import './header.styles.scss';
 import { ReactComponent as Logo } from '../../assets/blueberries.svg';
@@ -30,4 +31,13 @@ const Header = ({currentUser}) => (
     </div>
 );
 
-export default Header;
+// takes in relevant state that gives it access to the props it needs
+const mapStateToProps = state => (
+    // Returns an object of the props the current class needs
+    {
+        currentUser: state.user.currentUser
+    }
+)
+
+// Syntax that involves using the connect function to essentially give the class access to the props it needs from the state
+export default connect(mapStateToProps)(Header);
