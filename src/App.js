@@ -7,7 +7,7 @@ import HomePage from "./components/pages/homepage/homepage.component";
 import ShopPage from "./components/pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "./components/pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
-import { auth } from "./firebase/firebase.utils.js";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils.js";
 
 export default class App extends Component {
 
@@ -19,14 +19,32 @@ export default class App extends Component {
     };
   }
 
-  unsubscribeFromAuth = null
+  unsubscribeFromAuth = null;
 
   componentDidMount() {
     // Open subscription between firebase and the application
-    this.unsubscribeFromAuth = auth.onAuthStateChanged( user => {
-      this.setState({ currentUser: user })
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      // If a user has been authenticated
+      if (userAuth) {
+        // Check if the use is in the db, if not then add the user
+        const userRef = await createUserProfileDocument(userAuth);
 
-      console.log(user);
+        // userRef stores the users info, so populate currentUser in state with that info
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          });
+
+          console.log(this.state);
+
+        });
+      } 
+    
+      this.setState({ currentUser: userAuth });
+
     });
   }
 

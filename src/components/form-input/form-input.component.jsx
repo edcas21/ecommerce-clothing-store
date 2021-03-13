@@ -9,7 +9,7 @@ const FormInput = ({ handleChange, label, ...otherProps }) => (
             // Check to see if there's something in the label prop
             label ?
             // If so, then render a label
-            // In terms of the classname add 'shrink' css class selector when user start typing
+            // In terms of the classname add 'shrink' css class selector when user starts typing
             (<label className={ `${otherProps.value.length ? 'shrink' : ''} form-input-label` }>
                 {label}
             </label>)
