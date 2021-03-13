@@ -55,7 +55,7 @@ export default class Directory extends Component {
                 {
                     this.state.sections.map(
                         // Destructuring section keys. Already called this.state so now within scope of these keys
-                        ({id, ...otherSectionProps}) => <MenuItem { ...otherSectionProps } />
+                        ({id, ...otherSectionProps}) => <MenuItem key={id} { ...otherSectionProps } />
                     )
                 }
             </div>
