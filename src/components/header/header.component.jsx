@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import { createStructuredSelector } from 'reselect';
 
 import "./header.styles.scss";
 import { ReactComponent as Logo } from "../../assets/blueberries.svg";
 import { auth } from "../../firebase/firebase.utils.js";
 import CartIcon from "../cart-icon/cart-icon.component";
 import CartDropDown from "../cart-dropdown/cart-dropdown.component";
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 
 const Header = ({ currentUser, hidden }) => (
   <div className="header">
@@ -39,11 +42,11 @@ const Header = ({ currentUser, hidden }) => (
 );
 
 // takes in relevant state that gives it access to the props it needs
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) =>
+const mapStateToProps =
   // Returns an object of the props the current class needs
-  ({
-    currentUser,
-    hidden,
+  createStructuredSelector({
+    currentUser: selectCurrentUser,
+    hidden: selectCartHidden,
   });
 
 // Syntax that involves using the connect function to essentially give the class access to the props it needs from the state
