@@ -24,3 +24,19 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
     // If there's no repeated items being added, then just return a new instance of the item
     return [...cartItems, { ...cartItemToAdd, quantity: 1}];
 };
+
+export const decreaseQuantity = (cartItems, cartItemToRemove) => {
+    const existingCartItem = cartItems.find(
+        cartItem => cartItem.id === cartItemToRemove.id
+    );
+
+    if (existingCartItem.quantity === 1) {
+        return cartItems.filter(cartItem => cartItem.id !== cartItemToRemove.id);
+    }
+
+    return cartItems.map(
+        cartItem => cartItem.id === cartItemToRemove.id ?
+        { ...cartItem, quantity: cartItem.quantity - 1 } :
+        cartItem
+    );
+};
