@@ -29,6 +29,7 @@ const CollectionItem = ({ item, addItem }) => {
         {" "}
         Add to cart{" "}
       </CustomButton>
+      
     </div>
   );
 };
